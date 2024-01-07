@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  localstack:
+    container_name: localstack
+    image: localstack/localstack
+    ports:
+      - "127.0.0.1:4566:4566"
+    environment:
+      - DEBUG=${DEBUG-}
+      - LAMBDA_EXECUTOR=${LAMBDA_EXECUTOR-} # local, docker, docker-reuse
+      - DOCKER_HOST=unix:///var/run/docker.sock
+      - HOSTNAME_EXTERNAL=localstack # Used to expose connections to others containers
+    volumes:
+      - "${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - './scripts:/etc/localstack/init/ready.d'
+  db:
+    container_name: postgres
+    image: postgres
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_DB=dbnotification
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin

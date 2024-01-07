@@ -1,0 +1,30 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>POC Confirmation Email</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+    <style>
+        .btn-link {
+            border: none;
+            outline: none;
+            background: none;
+            cursor: pointer;
+            color: #0000EE;
+            padding: 0;
+            text-decoration: underline;
+            font-family: inherit;
+            font-size: inherit;
+        }
+    </style>
+</head>
+    <body>
+        <form th:action="${url_confirmation}" method="post">
+            <p th:text="'Hello, ' + ${name}"></p>
+
+            <p>This is a POC confirmation email. To confirm your registration, please click link bellow :) </p>
+
+            <button type="submit" class="btn-link">Confirm</button>
+        </form>
+    </body>
+</html>

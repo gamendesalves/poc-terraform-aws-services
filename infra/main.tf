@@ -16,7 +16,8 @@ module "alb" {
 }
 
 module "iam" {
-  source = "./modules/iam"
+  source                        = "./modules/iam"
+  notification_client_queue_arn = module.sqs.notification_queue_arn
 }
 
 module "ecs" {
@@ -30,6 +31,17 @@ module "ecs" {
 
 module "dynamodb" {
   source = "./modules/dynamodb"
+}
+
+module "sqs" {
+  source = "./modules/sqs"
+}
+
+module "lambda" {
+  source                           = "./modules/lambda"
+  iam_lambda_policy_arn            = module.iam.lambda_role_arn
+  notification_queue_url           = module.sqs.notification_queue_url
+  dynamodb_table_client_stream_arn = module.dynamodb.dynamodb_table_client_stream_arn
 }
 
 module "gtw" {
