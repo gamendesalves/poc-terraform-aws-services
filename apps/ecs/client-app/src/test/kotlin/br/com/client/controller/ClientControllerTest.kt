@@ -1,4 +1,5 @@
 import br.com.client.ClientAppApplication
+import br.com.client.ContainerConfigs
 import br.com.client.model.Address
 import br.com.client.model.Client
 import br.com.client.repository.ClientRepository
@@ -10,8 +11,11 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.MediaType
+import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
@@ -23,14 +27,15 @@ import java.util.*
 @ExtendWith(SpringExtension::class)
 @SpringBootTest(classes = [ClientAppApplication::class])
 @AutoConfigureMockMvc
-class ClientControllerTest(@Autowired val mockMvc: MockMvc) {
+@ActiveProfiles("test") // Used to configure DynamoDBConfig class
+class ClientControllerTest(@Autowired val mockMvc: MockMvc) : ContainerConfigs() {
 
     @MockkBean
     lateinit var repository: ClientRepository
 
     @Test
     fun `Get all clients`() {
-        every { repository.findAll() } returns listOf(getClient(), getClient("Pedro"))
+        every { repository.findAll(any<PageRequest>()) } returns PageImpl(listOf(getClient(), getClient("Pedro")))
 
         mockMvc.perform(
             get("/clients")
@@ -38,8 +43,8 @@ class ClientControllerTest(@Autowired val mockMvc: MockMvc) {
         )
             .andExpect(status().isOk)
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("\$.[0].name").value("Gabriel"))
-            .andExpect(jsonPath("\$.[1].name").value("Pedro"))
+            .andExpect(jsonPath("\$.content.[0].name").value("Gabriel"))
+            .andExpect(jsonPath("\$.content.[1].name").value("Pedro"))
     }
 
     @Test

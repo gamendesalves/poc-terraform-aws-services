@@ -1,4 +1,5 @@
 import br.com.client.ClientAppApplication
+import br.com.client.ContainerConfigs
 import br.com.client.model.Address
 import br.com.client.model.Client
 import br.com.client.repository.ClientRepository
@@ -10,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.data.domain.PageRequest
 import org.springframework.test.context.ActiveProfiles
-import org.springframework.test.context.TestPropertySource
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.context.web.WebAppConfiguration
 import java.time.LocalDateTime
@@ -19,15 +19,8 @@ import java.util.*
 @ExtendWith(SpringExtension::class)
 @SpringBootTest(classes = [ClientAppApplication::class])
 @WebAppConfiguration
-@ActiveProfiles("test")
-@TestPropertySource(
-    properties = [
-        "amazon.dynamodb.endpoint=http://localhost:4566/",
-        "amazon.aws.accesskey=test1",
-        "amazon.aws.secretkey=test231"
-    ]
-)
-class ClientRepositoryTest(@Autowired val repository: ClientRepository) {
+@ActiveProfiles("test") // Used to configure DynamoDBConfig class
+class ClientRepositoryTest(@Autowired val repository: ClientRepository) : ContainerConfigs() {
 
     companion object {
         const val EXPECTED_NAME = "Gabriel"

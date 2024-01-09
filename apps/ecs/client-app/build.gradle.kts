@@ -13,6 +13,7 @@ version = "0.0.1"
 dependencyManagement {
 	imports {
 		mavenBom("org.springframework.data:spring-data-releasetrain:Lovelace-SR16")
+		mavenBom("org.testcontainers:testcontainers-bom:1.19.0")
 	}
 }
 
@@ -41,6 +42,9 @@ dependencies {
 	testImplementation("org.springframework.boot:spring-boot-starter-test") {
 		exclude(module = "mockito-core")
 	}
+	testImplementation("org.testcontainers:localstack")
+	testImplementation("org.testcontainers:testcontainers")
+	testImplementation("org.testcontainers:junit-jupiter")
 	testImplementation("org.junit.jupiter:junit-jupiter-api")
 	testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
 	testImplementation("com.ninja-squad:springmockk:4.0.0")
